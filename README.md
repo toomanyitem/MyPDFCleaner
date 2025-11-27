@@ -40,8 +40,6 @@ python3 --version
 git clone https://github.com/toomanyitem/MyPDFCleaner.git
 cd MyPDFCleaner
 
-(เปลี่ยน your-username ตาม GitHub ของคุณ)
-
 ⸻
 
 2) รันคำสั่ง Setup เพื่อติดตั้งอัตโนมัติ
