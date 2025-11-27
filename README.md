@@ -37,7 +37,7 @@ python3 --version
 
 1) ดาวน์โหลดโปรเจ็ค
 
-git clone https://github.com/your-username/MyPDFCleaner.git
+git clone https://github.com/toomanyitem/MyPDFCleaner.git
 cd MyPDFCleaner
 
 (เปลี่ยน your-username ตาม GitHub ของคุณ)
