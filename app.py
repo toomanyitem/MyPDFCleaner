@@ -3,6 +3,7 @@ import uuid
 import shutil
 import re
 import subprocess
+import io
 from flask import Flask, render_template, request, send_file, after_this_request, jsonify
 from remove_text import remove_texts_from_pdf
 try:
@@ -94,13 +95,12 @@ def export_pdf():
                 # force_ocr=True involves rasterizing pages which is slow but accurate for images.
                 # skip_text=True is generally faster if existing text is fine.
                 # converting to word/txt needs good text layer.
-                ocrmypdf.ocr(input_path, ocr_output_path, skip_text=True, language='thai+eng')
+                ocrmypdf.ocr(input_path, ocr_output_path, skip_text=True, language='tha+eng')
                 current_input_path = ocr_output_path
                 temp_files.append(ocr_output_path)
             except Exception as e:
                 print(f"OCR Error: {e}")
                 # Proceed without OCR if failed? Or return error?
-                # For export, if OCR fails, they get empty doc from image pdf.
                 pass 
 
         # 2. Convert Step
@@ -118,15 +118,19 @@ def export_pdf():
         
         temp_files.append(output_path)
 
-        @after_this_request
-        def remove_files(response):
-            for p in temp_files:
-                try:
-                    if os.path.exists(p): os.remove(p)
-                except: pass
-            return response
+        # Read to memory
+        return_data = io.BytesIO()
+        with open(output_path, 'rb') as f:
+            return_data.write(f.read())
+        return_data.seek(0)
+        
+        # Cleanup immediately
+        for p in temp_files:
+            try:
+                if os.path.exists(p): os.remove(p)
+            except: pass
 
-        return send_file(output_path, as_attachment=True, download_name=output_filename)
+        return send_file(return_data, as_attachment=True, download_name=output_filename)
 
     except Exception as e:
         return {'error': str(e)}, 500
@@ -175,10 +179,8 @@ def process_pdf():
             
             try:
                 # Run OCR and save to intermediate file
-                # force_ocr=True/False or skip_text=True depends on need. 
-                # 'skip_text' is safer to not mess up existing text.
                 print("Starting OCR...")
-                ocrmypdf.ocr(input_path, ocr_output_path, skip_text=True, language='thai+eng')
+                ocrmypdf.ocr(input_path, ocr_output_path, skip_text=True, language='tha+eng')
                 current_input_path = ocr_output_path
             except Exception as e:
                 # Fallback or error? Let's error for now to inform user
@@ -191,18 +193,19 @@ def process_pdf():
         if not os.path.exists(final_output_path):
              return {'error': 'Processing failed to create output file'}, 500
 
-        # Cleanup
-        @after_this_request
-        def remove_files(response):
+        # Read to memory
+        return_data = io.BytesIO()
+        with open(final_output_path, 'rb') as f:
+            return_data.write(f.read())
+        return_data.seek(0)
+        
+        # Cleanup files immediately
+        for p in [input_path, ocr_output_path, final_output_path]:
             try:
-                if os.path.exists(input_path): os.remove(input_path)
-                if os.path.exists(ocr_output_path): os.remove(ocr_output_path)
-                if os.path.exists(final_output_path): os.remove(final_output_path)
-            except Exception as e:
-                app.logger.error(f"Error cleaning up: {e}")
-            return response
+                if os.path.exists(p): os.remove(p)
+            except: pass
 
-        return send_file(final_output_path, as_attachment=True, download_name=f"cleaned_{file.filename}")
+        return send_file(return_data, as_attachment=True, download_name=f"cleaned_{file.filename}")
 
     except Exception as e:
         return {'error': str(e)}, 500

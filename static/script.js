@@ -63,8 +63,14 @@ function setLanguage(lang) {
     const txtInput = document.getElementById('text-input');
     if (txtInput) {
         txtInput.placeholder = lang === 'en'
-            ? "Example:\nConfidential\nTop Secret\n123456789"
-            : "ตัวอย่าง:\nความลับ\nConfidential\n123456789";
+            ? `Example:
+Confidential
+Top Secret
+123456789`
+            : `ตัวอย่าง:
+ความลับ
+Confidential
+123456789`;
     }
 
     // Toggle Buttons
