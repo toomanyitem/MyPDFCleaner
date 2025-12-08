@@ -264,6 +264,7 @@ window.addEventListener('load', async () => {
 
         if (data.available) {
             if (ocrStatus) {
+                ocrStatus.setAttribute('data-i18n', 'ocr_ready');
                 ocrStatus.textContent = translations[currentLang].ocr_ready;
                 ocrStatus.classList.add('success');
             }
@@ -271,6 +272,7 @@ window.addEventListener('load', async () => {
             if (ocrCheckExport) ocrCheckExport.disabled = false;
         } else {
             if (ocrStatus) {
+                ocrStatus.setAttribute('data-i18n', 'ocr_missing');
                 ocrStatus.textContent = translations[currentLang].ocr_missing;
                 ocrStatus.classList.add('error');
             }
