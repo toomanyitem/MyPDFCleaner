@@ -1,0 +1,4 @@
+flask
+pymupdf
+ocrmypdf
+python-docx

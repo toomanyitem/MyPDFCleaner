@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPDFCleaner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Background Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <div class="glass-container">
+
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="th">TH</button>
+            <span class="divider">/</span>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <header>
+            <div class="logo">MyPDF<span>Cleaner</span></div>
+            <p class="subtitle" data-i18n="subtitle">ลบข้อความสำคัญออกจากไฟล์ PDF ของคุณอย่างปลอดภัย</p>
+        </header>
+
+        <main>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="redact" data-i18n="tab_redact">ลบข้อความ</button>
+                <button class="tab-btn" data-tab="export" data-i18n="tab_export">แปลงไฟล์</button>
+            </div>
+
+            <div class="upload-area" id="drop-zone">
+                <div class="icon-container">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 16L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M9 11L12 8 15 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M8 16H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M3 9C3 6.17157 3 4.75736 3.87868 3.87868C4.75736 3 6.17157 3 9 3H15C17.8284 3 19.2426 3 20.1213 3.87868C21 4.75736 21 6.17157 21 9V15C21 17.8284 21 19.2426 20.1213 20.1213C19.2426 21 17.8284 21 15 21H9C6.17157 21 4.75736 21 3.87868 20.1213C3 19.2426 3 17.8284 3 15V9Z"
+                            stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3 data-i18n="drop_title">ลากไฟล์ PDF มาวางที่นี่</h3>
+                <p data-i18n="drop_desc">หรือคลิกเพื่อเลือกไฟล์</p>
+                <input type="file" id="file-input" accept=".pdf" hidden>
+                <div class="file-info" id="file-info" style="display: none;">
+                    <span id="filename">filename.pdf</span>
+                    <button id="remove-file" aria-label="Remove file">✕</button>
+                </div>
+            </div>
+
+            <!-- Redact Section -->
+            <div id="section-redact" class="tab-content active">
+                <div class="controls">
+                    <label for="text-input" data-i18n="label_text_input">ข้อความที่ต้องการลบ
+                        (แยกบรรทัดเพื่อระบุหลายคำ)</label>
+                    <textarea id="text-input" placeholder="ตัวอย่าง:\nความลับ\nConfidential\n123456789"></textarea>
+                </div>
+
+                <div class="options-area">
+                    <div class="option-group">
+                        <h4 data-i18n="header_auto_redact">ตัวช่วยลบอัตโนมัติ</h4>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="pattern" value="ALL_SENSITIVE"> <strong
+                                    data-i18n="chk_all_sensitive">ลบข้อมูลส่วนตัวทั้งหมด</strong></label>
+                            <label><input type="checkbox" name="pattern" value="EMAIL"> <span
+                                    data-i18n="chk_email">อีเมล</span></label>
+                            <label><input type="checkbox" name="pattern" value="PHONE"> <span
+                                    data-i18n="chk_phone">เบอร์โทรศัพท์</span></label>
+                            <label><input type="checkbox" name="pattern" value="ID_CARD"> <span
+                                    data-i18n="chk_id_card">เลขบัตรประชาชน</span></label>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4 data-i18n="header_ocr">สำหรับเอกสารสแกน (OCR)</h4>
+                        <label class="ocr-label" title="ต้องติดตั้ง Tesseract OCR ในเครื่องถึงจะใช้งานได้">
+                            <input type="checkbox" id="ocr-checkbox-redact" class="ocr-check">
+                            <span data-i18n="chk_enable_ocr">เปิดใช้งาน OCR</span>
+                        </label>
+                        <div id="ocr-status" class="status-small" data-i18n="ocr_checking">กำลังตรวจสอบระบบ OCR...</div>
+                    </div>
+                </div>
+
+                <button id="process-btn" disabled>
+                    <span class="btn-text" data-i18n="btn_start_redact">เริ่มการลบข้อความ</span>
+                    <span class="loader" style="display: none;"></span>
+                </button>
+            </div>
+
+            <!-- Export Section -->
+            <div id="section-export" class="tab-content">
+                <div class="export-options">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);" data-i18n="export_desc">แปลงไฟล์ PDF
+                        ของคุณเป็นเอกสารที่แก้ไขได้</p>
+
+                    <div class="option-group" style="margin-bottom: 1.5rem;">
+                        <label class="ocr-label" title="ช่วยให้อ่านข้อความจากไฟล์สแกนได้ดีขึ้น">
+                            <input type="checkbox" id="ocr-checkbox-export" class="ocr-check" checked>
+                            <span data-i18n="chk_ocr_export">ใช้ OCR ช่วยแกะข้อความ (แนะนำ)</span>
+                        </label>
+                    </div>
+
+                    <div class="export-buttons" style="display: grid; gap: 1rem;">
+                        <button id="export-docx-btn" class="secondary-btn" disabled>
+                            📄 <span data-i18n="btn_export_word">แปลงเป็น Word (.docx)</span>
+                            <span class="loader" style="display: none;"></span>
+                        </button>
+                        <button id="export-txt-btn" class="secondary-btn" disabled>
+                            📝 <span data-i18n="btn_export_text">แปลงเป็น Text (.txt)</span>
+                            <span class="loader" style="display: none;"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
