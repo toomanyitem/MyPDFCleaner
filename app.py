@@ -5,7 +5,7 @@ import re
 import subprocess
 import io
 from flask import Flask, render_template, request, send_file, after_this_request, jsonify
-from remove_text import remove_texts_from_pdf
+from utils.text_cleaner import remove_texts_from_pdf
 try:
     from utils.exporter import convert_to_text, convert_to_word
 except ImportError:

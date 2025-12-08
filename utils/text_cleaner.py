@@ -2,7 +2,6 @@ import fitz
 import os
 import re
 
-
 def remove_texts_from_pdf(input_pdf_path, output_pdf_path, texts_to_remove, regex_patterns=None):
     if not texts_to_remove and not regex_patterns:
         print("❗ ไม่มีรายการข้อความที่จะลบ → ยกเลิก.")
@@ -69,33 +68,3 @@ def remove_texts_from_pdf(input_pdf_path, output_pdf_path, texts_to_remove, rege
 
     except Exception as e:
         print(f"เกิดข้อผิดพลาด ❗ {e}")
-
-
-def ask_texts():
-    print("\nกรอกข้อความที่จะลบ (ENTER ว่างหรือ done เพื่อประมวลผล)\n")
-    data = []
-    while True:
-        t = input("ข้อความ: ").strip()
-        if t == "" or t.lower() in ["done", "จบ", "q", "exit"]:
-            break
-        data.append(t)
-    return data
-
-
-if __name__ == "__main__":
-    input_file = input("\n📄 ระบุชื่อไฟล์ PDF ที่ต้องการลบข้อความ: ").strip()
-    if not os.path.exists(input_file):
-        print(f"❗ ไม่พบไฟล์ {input_file} ในโฟลเดอร์")
-        exit()
-
-    output_file = input("📁 ชื่อไฟล์ที่จะบันทึกใหม่ (default: cleaned_output.pdf): ").strip()
-    if output_file == "":
-        output_file = "cleaned_output.pdf"
-
-    print("\n================ START =================")
-    print(f"Input : {input_file}")
-    print(f"Output: {output_file}")
-    print("========================================\n")
-
-    items = ask_texts()
-    remove_texts_from_pdf(input_file, output_file, items)

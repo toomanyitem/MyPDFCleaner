@@ -1,0 +1,13 @@
+.venv
+venv
+__pycache__
+.git
+.gitignore
+uploads/*
+!uploads/.gitkeep
+run.bat
+run.sh
+Dockerfile
+docker-compose.yml
+k8s/
+*.md

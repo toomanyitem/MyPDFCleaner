@@ -40,6 +40,23 @@
 
 ---
 
+## 🐳 การใช้งานด้วย Docker (แนะนำสำหรับ Server)
+
+### วิธีที่ 1: Docker Compose (ง่ายที่สุด)
+```bash
+docker-compose up -d --build
+```
+เข้าใช้งานได้ที่: `http://localhost:5000`
+
+### วิธีที่ 2: Kubernetes (K8s)
+หากท่านมี K8s Cluster อยู่แล้ว:
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+```
+
+---
+
 # MyPDFCleaner (English)
 
 **MyPDFCleaner** is a secure, local web application to redact sensitive text from PDFs and export them to editable formats, featuring a modern Glassmorphism UI.
@@ -74,3 +91,17 @@
 
 *Note (Windows): You may be prompted to allow the Ghostscript installer to run.*
 *Note (macOS/Linux): If system packages are missing, the script will attempt to install them via `brew` or `apt`.*
+
+### 🐳 Docker Support
+
+**Using Docker Compose:**
+```bash
+docker-compose up -d --build
+```
+Access at: `http://localhost:5000`
+
+**Using Kubernetes:**
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+```
