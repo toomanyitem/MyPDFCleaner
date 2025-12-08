@@ -23,21 +23,20 @@
 
 ---
 
-## 🚀 วิธีติดตั้งและใช้งาน
+## 🚀 วิธีติดตั้งและใช้งาน (Installation)
 
-### 1. ติดตั้ง Python และ Tesseract OCR
-*   **Windows**:
-    *   ดาวน์โหลดและติดตั้ง [Python](https://www.python.org/downloads/) (ติ๊กถูกช่อง "Add Python to PATH" ด้วย)
-    *   ดาวน์โหลดและติดตั้ง [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) (โปรแกรมจะพยายามติดตั้งให้อัตโนมัติถ้าไม่มี)
-*   **macOS**: `brew install tesseract tesseract-lang`
-*   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-tha`
-
-### 2. รันโปรแกรม
-ดับเบิ้ลคลิกที่ไฟล์สำหรับระบบของคุณ:
+**ทำเพียงแค่ข้อเดียว:**
 *   **Windows**: ดับเบิ้ลคลิก `run.bat`
 *   **macOS / Linux**: เปิด Terminal แล้วรัน `./run.sh`
 
-โปรแกรมจะตรวจสอบและติดตั้งตัวช่วย (Dependencies) ที่จำเป็นให้อัตโนมัติ แล้วเปิดหน้าเว็บขึ้นมา
+**🔥 ระบบจะจัดการให้เองทั้งหมด (All-in-One):**
+1.  ติดตั้ง/ตรวจสอบ **Python Environment**
+2.  ติดตั้ง **Ghostscript** (สำหรับจัดการ PDF)
+3.  ติดตั้ง **Tesseract OCR** (สำหรับอ่านภาพ)
+4.  ดาวน์โหลด **ไฟล์ภาษาไทย/อังกฤษ (Language Data)** ให้เอง
+
+*หมายเหตุ: หากเป็น Windows ระบบอาจขอให้ท่านกด "Yes" เพื่อติดตั้ง Ghostscript ในครั้งแรกเท่านั้น*
+*หมายเหตุ (macOS/Linux): หากยังไม่มี dependencies ระบบจะแจ้งคำสั่งติดตั้งให้ทราบ (เช่น brew/apt)*
 
 ---
 
@@ -64,16 +63,14 @@
 
 ## 🚀 Installation & Usage
 
-### 1. Prerequisites
-*   **Python**: Install [Python](https://www.python.org/downloads/) (Ensure "Add to PATH" is checked).
-*   **Tesseract OCR**:
-    *   **Windows**: Program attempts auto-install via Winget, or download from [UB-Mannheim](https://github.com/UB-Mannheim/tesseract/wiki).
-    *   **macOS**: `brew install tesseract tesseract-lang`
-    *   **Linux**: `sudo apt install tesseract-ocr tesseract-ocr-tha`
-
-### 2. How to Run
-Simply execute the script for your OS:
+**Just one step:**
 *   **Windows**: Double-click `run.bat`
-*   **macOS / Linux**: Run `./run.sh` in terminal.
+*   **macOS / Linux**: Run `./run.sh` in your terminal.
 
-The script will automatically install dependencies (in a virtual environment) and launch the web interface.
+**🔥 The script automatically handles:**
+1.  **Python Environment** setup.
+2.  **Ghostscript** downloading & installation (Automated).
+3.  **Tesseract OCR** & **Language Data (Thai/Eng)** downloading.
+
+*Note (Windows): You may be prompted to allow the Ghostscript installer to run.*
+*Note (macOS/Linux): If system packages are missing, the script will attempt to install them via `brew` or `apt`.*
