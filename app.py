@@ -5,6 +5,8 @@ import re
 import subprocess
 import io
 import logging
+import webbrowser
+from threading import Timer
 from flask import Flask, render_template, request, send_file, after_this_request, jsonify
 
 # Configure logging
@@ -221,4 +223,18 @@ def process_pdf():
         return {'error': str(e)}, 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    def open_browser():
+        webbrowser.open_new('http://127.0.0.1:5000/')
+    
+    print("====================================================")
+    print("🚀  MyPDFCleaner Server Started Successfully!")
+    print("====================================================")
+    print("📌  Local Address:   http://127.0.0.1:5000")
+    print("📌  Network Address: http://0.0.0.0:5000 (If enabled)")
+    print("====================================================")
+    print("🌐  Browser will open automatically in 1.5 seconds...")
+    print("❌  DO NOT CLOSE THIS WINDOW (ห้ามปิดหน้าต่างนี้)")
+    print("====================================================")
+    
+    Timer(1.5, open_browser).start()
+    app.run(debug=True, port=5000, use_reloader=False) # Disable reloader to prevent double-open
