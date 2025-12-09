@@ -8,11 +8,7 @@ where gswin64c >nul 2>nul
 if %errorlevel% EQU 0 goto :CHECK_TESS
 
 echo [!] Ghostscript not found in PATH.
-if exist "C:\Program Files\gs\gs10.04.0\bin\gswin64c.exe" (
-    set "PATH=%PATH%;C:\Program Files\gs\gs10.04.0\bin"
-    echo Found Ghostscript in Program Files.
-    goto :CHECK_TESS
-)
+if exist "C:\Program Files\gs\gs10.04.0\bin\gswin64c.exe" set "PATH=%PATH%;C:\Program Files\gs\gs10.04.0\bin" & echo Found Ghostscript in Program Files. & goto :CHECK_TESS
 
 echo.
 echo [!] Ghostscript is NOT installed.
@@ -25,19 +21,12 @@ set "GS_INSTALLER=gs_installer.exe"
 echo Downloading from %GS_URL%...
 powershell -Command "try { Invoke-WebRequest -Uri '%GS_URL%' -OutFile '%GS_INSTALLER%' -ErrorAction Stop } catch { exit 1 }"
 
-if %errorlevel% NEQ 0 (
-    echo [X] Download failed. Please check your internet connection.
-    goto :MANUAL_GS
-)
+if %errorlevel% NEQ 0 goto :DL_FAILED
 
 echo [V] Download complete. Installing (Silent Mode)...
 start /wait %GS_INSTALLER% /S
 
-if %errorlevel% NEQ 0 (
-    echo [X] Installation failed.
-    del %GS_INSTALLER%
-    goto :MANUAL_GS
-)
+if %errorlevel% NEQ 0 goto :INSTALL_FAILED
 
 del %GS_INSTALLER%
 echo [V] Ghostscript installed successfully.
@@ -45,6 +34,15 @@ echo.
 echo [!] IMPORTANT: Please RESTART this script to apply the changes.
 pause
 exit
+
+:DL_FAILED
+echo [X] Download failed. Please check your internet connection.
+goto :MANUAL_GS
+
+:INSTALL_FAILED
+echo [X] Installation failed.
+del %GS_INSTALLER%
+goto :MANUAL_GS
 
 :MANUAL_GS
 echo.
@@ -62,16 +60,8 @@ if %errorlevel% EQU 0 goto :FOUND_TESS
 echo [!] Tesseract OCR not found in PATH.
 echo Checking common locations...
 
-if exist "C:\Program Files\Tesseract-OCR\tesseract.exe" (
-    set "PATH=%PATH%;C:\Program Files\tesseract-OCR"
-    echo Found in Program Files.
-    goto :FOUND_TESS
-)
-if exist "C:\Program Files (x86)\Tesseract-OCR\tesseract.exe" (
-    set "PATH=%PATH%;C:\Program Files (x86)\tesseract-OCR"
-    echo Found in Program Files (x86).
-    goto :FOUND_TESS
-)
+if exist "C:\Program Files\Tesseract-OCR\tesseract.exe" set "PATH=%PATH%;C:\Program Files\Tesseract-OCR" & echo Found in Program Files. & goto :FOUND_TESS
+if exist "C:\Program Files (x86)\Tesseract-OCR\tesseract.exe" set "PATH=%PATH%;C:\Program Files (x86)\Tesseract-OCR" & echo Found in Program Files (x86). & goto :FOUND_TESS
 
 :INSTALL_TESS
 echo.
