@@ -4,7 +4,17 @@ import shutil
 import re
 import subprocess
 import io
+import logging
 from flask import Flask, render_template, request, send_file, after_this_request, jsonify
+
+# Configure logging
+logging.basicConfig(
+    filename='app.log',
+    level=logging.ERROR,
+    format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+)
+logging.getLogger('werkzeug').setLevel(logging.ERROR) # Quiet werkzeug logs to file
+
 from utils.text_cleaner import remove_texts_from_pdf
 try:
     from utils.exporter import convert_to_text, convert_to_word
@@ -99,8 +109,8 @@ def export_pdf():
                 current_input_path = ocr_output_path
                 temp_files.append(ocr_output_path)
             except Exception as e:
+                logging.error(f"OCR Error: {e}", exc_info=True)
                 print(f"OCR Error: {e}")
-                # Proceed without OCR if failed? Or return error?
                 pass 
 
         # 2. Convert Step
@@ -183,7 +193,7 @@ def process_pdf():
                 ocrmypdf.ocr(input_path, ocr_output_path, skip_text=True, language='tha+eng')
                 current_input_path = ocr_output_path
             except Exception as e:
-                # Fallback or error? Let's error for now to inform user
+                logging.error(f"OCR Process Error: {e}", exc_info=True)
                 print(f"OCR Error: {e}")
                 return {'error': f"OCR Process Failed: {str(e)}"}, 500
 
